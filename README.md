@@ -1,10 +1,10 @@
 # Log for PHP
 
-[![Latest Stable Version](https://poser.pugx.org/wilkques/php-log/v/stable)](https://packagist.org/packages/wilkques/php-log)
-[![License](https://poser.pugx.org/wilkques/php-log/license)](https://packagist.org/packages/wilkques/php-log)
+[![Latest Stable Version](https://poser.pugx.org/wilkques/log/v/stable)](https://packagist.org/packages/wilkques/log)
+[![License](https://poser.pugx.org/wilkques/log/license)](https://packagist.org/packages/wilkques/log)
 
 ````
-composer require wilkques/php-log
+composer require wilkques/log
 ````
 
 ## How to use
