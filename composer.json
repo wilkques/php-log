@@ -1,0 +1,12 @@
+{
+    "name": "wilkques/log",
+    "description": "PHP Log",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Wilkques\\Log\\": "src/"
+        }
+    },
+    "require": {}
+}
