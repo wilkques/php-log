@@ -11,6 +11,10 @@ composer require wilkques/log
 ```php
 $log = new \Wilkques\Log\Log;
 
+// or
+
+$log = logger();
+
 $log->logName('<change log name>'); // default system.log
 
 $log->path('<change log path>'); // default ./storage/logs
