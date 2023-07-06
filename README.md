@@ -29,13 +29,9 @@ $log->error(123);
 
 $log->critical(123);
 
-$log->error(
-    $log->exceptionLog(new \Exception(123, 400))
-);
+$log->error(new \Exception(123, 400));
 
-$log->critical(
-    $log->exceptionLog(new \Exception(456, 500))
-);
+$log->critical(new \Exception(456, 500));
 
 ```
 
@@ -62,7 +58,7 @@ output
 [2023-06-13 17:02:20] [CRITICAL] : 123 
 
 [2023-06-13 17:02:20] [ERROR] : 123 
-ERROR(code:400) 
+(code:400) 
 /var/www/try/app/Console/ChatGpt.php:(69) 
 [stackTrace] 
 #0 /var/www/try/app/Console/ChatGpt.php(37): App\Console\ChatGpt->httpRequest()
@@ -72,7 +68,7 @@ ERROR(code:400)
  
 
 [2023-06-13 17:02:20] [CRITICAL] : 456 
-ERROR(code:500) 
+(code:500) 
 /var/www/try/app/Console/ChatGpt.php:(70) 
 [stackTrace] 
 #0 /var/www/try/app/Console/ChatGpt.php(37): App\Console\ChatGpt->httpRequest()

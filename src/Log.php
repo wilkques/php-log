@@ -51,6 +51,138 @@ class Log
 
     /**
      * @param string $message
+     * @param mixed  $arguments
+     * 
+     * @return static
+     */
+    public function info($message, $arguments = array())
+    {
+        return $this->logger(
+            $this->content(
+                'info',
+                array(
+                    $message, json_encode($arguments)
+                )
+            )
+        );
+    }
+
+    /**
+     * @param string $message
+     * @param mixed  $arguments
+     * 
+     * @return static
+     */
+    public function debug($message, $arguments = array())
+    {
+        return $this->logger(
+            $this->content(
+                'debug',
+                array(
+                    $message, json_encode($arguments)
+                )
+            )
+        );
+    }
+
+    /**
+     * @param string $message
+     * @param mixed  $arguments
+     * 
+     * @return static
+     */
+    public function warning($message, $arguments = array())
+    {
+        return $this->logger(
+            $this->content(
+                'warning',
+                array(
+                    $message, json_encode($arguments)
+                )
+            )
+        );
+    }
+
+    /**
+     * @param string|\Exception $message
+     * @param string $context
+     * 
+     * @return static
+     */
+    public function error($message, $content = '')
+    {
+        $isException = false;
+
+        $params = array(
+            $message, $content
+        );
+
+        if ($message instanceof \Exception) {
+            $isException = true;
+
+            array_shift($params);
+
+            $params = $this->params($params, $message);
+        }
+
+        return $this->logger(
+            $this->content('error', $params, $isException)
+        );
+    }
+
+    /**
+     * @param string|\Exception $message
+     * @param string $content
+     * 
+     * @return static
+     */
+    public function critical($message, $content = '')
+    {
+        $isException = false;
+
+        $params = array(
+            $message, $content
+        );
+
+        if ($message instanceof \Exception) {
+            $isException = true;
+
+            array_shift($params);
+
+            $params = $this->params($params, $message);
+        }
+
+        return $this->logger(
+            $this->content('critical', $params, $isException)
+        );
+    }
+
+    /**
+     * @param array $params
+     * @param \Exception $exception
+     * 
+     * @return array
+     */
+    public function params($params = array(), $exception = null)
+    {
+        if (!$exception) {
+            return $params;
+        }
+
+        array_unshift(
+            $params,
+            $exception->getMessage(),
+            $exception->getCode(),
+            $exception->getFile(),
+            $exception->getLine(),
+            $exception->getTraceAsString()
+        );
+
+        return $params;
+    }
+
+    /**
+     * @param string $message
      * 
      * @return static
      */
@@ -60,93 +192,73 @@ class Log
     }
 
     /**
-     * @param string $message
-     * @param mixed  $arguments
-     * 
-     * @return static
-     */
-    public function info(string $message, $arguments = [])
-    {
-        return $this->logName()->logger(
-            "[INFO] : {$message} \n" .
-                "[Information] \n" .
-                "#0 arguments: \n" . json_encode($arguments) . "\n"
-        );
-    }
-
-    /**
-     * @param string $message
-     * @param mixed  $arguments
-     * 
-     * @return static
-     */
-    public function debug(string $message, $arguments = [])
-    {
-        return $this->logName()->logger(
-            "[DEBUG] : {$message} \n" .
-                "[Information] \n" .
-                "#0 arguments: \n" . json_encode($arguments) . "\n"
-        );
-    }
-
-    /**
-     * @param string $message
-     * @param mixed  $arguments
-     * 
-     * @return static
-     */
-    public function warning(string $message, $arguments = [])
-    {
-        return $this->logName()->logger(
-            "[WARNING] : {$message} \n" .
-                "[Information] \n" .
-                "#0 arguments: \n" . json_encode($arguments) . "\n"
-        );
-    }
-
-    /**
-     * @param string $message
-     * @param string $context
-     * 
-     * @return static
-     */
-    public function error($message, $context = '')
-    {
-        return $this->logName()->logger(
-            "[ERROR] : {$message} \n" .
-                $context
-        );
-    }
-
-    /**
-     * @param string $message
-     * @param string $context
-     * 
-     * @return static
-     */
-    public function critical($message, $context = '')
-    {
-        return $this->logName()->logger(
-            "[CRITICAL] : {$message} \n" .
-                $context
-        );
-    }
-
-    /**
-     * @param \Exception $exception
      * @param string $logLevel
+     * @param array $params
+     * @param bool|false $isException
      * 
      * @return string
      */
-    public function exceptionLog(\Exception $exception, $logLevel = 'ERROR')
+    public function content($logLevel, $params = array(), $isException = false)
     {
-        $logLevel = strtoupper($logLevel);
+        array_unshift($params, strtoupper($logLevel));
 
-        return "{$exception->getMessage()} \n" .
-                "{$logLevel}(code:{$exception->getCode()}) \n" .
-                $exception->getFile() . ":({$exception->getLine()}) \n" .
-                "[stackTrace] \n" .
-                $exception->getTraceAsString() . "\n";
+        return $this->replaceContent(
+            $this->contentFormat($logLevel, $isException),
+            $params
+        );
+    }
+
+    /**
+     * @param string $contentFormat
+     * @param array $params
+     * 
+     * @return string
+     */
+    public function replaceContent($contentFormat, $params = array())
+    {
+        array_unshift($params, $contentFormat);
+
+        return call_user_func_array('sprintf', $params);
+    }
+
+    /**
+     * @param string $logLevel
+     * @param bool $isException
+     * 
+     * @return string
+     */
+    public function contentFormat($logLevel, $isException = false)
+    {
+        if ($isException) {
+            return <<<CONTENT
+[%s] : %s
+(code:%s)
+%s:(%s)
+[StackTrace]
+%s
+%s
+CONTENT;
+        }
+
+        switch ($logLevel) {
+            case 'error':
+            case 'critical':
+                return <<<CONTENT
+[%s] : %s 
+%s
+%s
+CONTENT;
+                break;
+            default:
+                return <<<CONTENT
+[%s] : %s 
+[Information] 
+#0 arguments: 
+%s
+%s
+CONTENT;
+                break;
+        }
     }
 
     /**
