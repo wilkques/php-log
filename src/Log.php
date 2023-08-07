@@ -114,7 +114,7 @@ class Log
         $isException = false;
 
         $params = array(
-            $message, $content
+            $message, $content, $message
         );
 
         if ($message instanceof \Exception) {
@@ -141,7 +141,7 @@ class Log
         $isException = false;
 
         $params = array(
-            $message, $content
+            $message, $content, $message
         );
 
         if ($message instanceof \Exception) {
