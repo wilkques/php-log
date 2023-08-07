@@ -114,7 +114,7 @@ class Log
         $isException = false;
 
         $params = array(
-            $message, $content, $message
+            $message, $content
         );
 
         if ($message instanceof \Exception) {
@@ -141,7 +141,7 @@ class Log
         $isException = false;
 
         $params = array(
-            $message, $content, $message
+            $message, $content
         );
 
         if ($message instanceof \Exception) {
@@ -246,7 +246,6 @@ CONTENT;
                 return <<<CONTENT
 [%s] : %s 
 %s
-%s
 CONTENT;
                 break;
             default:
@@ -254,7 +253,6 @@ CONTENT;
 [%s] : %s 
 [Information] 
 #0 arguments: 
-%s
 %s
 CONTENT;
                 break;
