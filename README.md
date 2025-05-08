@@ -13,6 +13,10 @@ $log = new \Wilkques\Log\Log;
 
 // or
 
+$log = \Wilkques\Log\Log::make();
+
+// or
+
 $log = logger();
 
 $log->logName('<change log name>'); // default system.log
@@ -38,41 +42,31 @@ $log->critical(new \Exception(456, 500));
 output
 
 ```log
-[2023-06-13 17:02:20] [INFO] : 123 
+[2025-05-08 17:31:49] [INFO] : 123 
 [Information] 
 #0 arguments: 
 []
-
-[2023-06-13 17:02:20] [DEBUG] : 123 
+[2025-05-08 17:31:49] [DEBUG] : 123 
 [Information] 
 #0 arguments: 
 []
-
-[2023-06-13 17:02:20] [WARNING] : 123 
+[2025-05-08 17:31:49] [WARNING] : 123 
 [Information] 
 #0 arguments: 
 []
+[2025-05-08 17:31:49] [ERROR] : 123 
 
-[2023-06-13 17:02:20] [ERROR] : 123 
+[2025-05-08 17:31:49] [CRITICAL] : 123 
 
-[2023-06-13 17:02:20] [CRITICAL] : 123 
+[2025-05-08 17:31:49] [ERROR] : 123
+(code:400)
+C:\works\projects\packages\54\test.php:(60)
+[StackTrace]
+#0 {main}
 
-[2023-06-13 17:02:20] [ERROR] : 123 
-(code:400) 
-/var/www/try/app/Console/ChatGpt.php:(69) 
-[stackTrace] 
-#0 /var/www/try/app/Console/ChatGpt.php(37): App\Console\ChatGpt->httpRequest()
-#1 /var/www/try/vendor/wilkques/console/src/Console.php(168): App\Console\ChatGpt->handle()
-#2 /var/www/try/artisan(18): Wilkques\Console\Console->handle()
-#3 {main}
- 
-
-[2023-06-13 17:02:20] [CRITICAL] : 456 
-(code:500) 
-/var/www/try/app/Console/ChatGpt.php:(70) 
-[stackTrace] 
-#0 /var/www/try/app/Console/ChatGpt.php(37): App\Console\ChatGpt->httpRequest()
-#1 /var/www/try/vendor/wilkques/console/src/Console.php(168): App\Console\ChatGpt->handle()
-#2 /var/www/try/artisan(18): Wilkques\Console\Console->handle()
-#3 {main}
+[2025-05-08 17:31:49] [CRITICAL] : 456
+(code:500)
+C:\works\projects\packages\54\test.php:(62)
+[StackTrace]
+#0 {main}
 ```

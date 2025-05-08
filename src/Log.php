@@ -5,49 +5,19 @@ namespace Wilkques\Log;
 class Log
 {
     /**
-     * log name
-     * 
      * @var string
      */
-    protected $name = 'system.log';
+    protected $channel = 'file';
+
+    /** @var static */
+    protected static $instance;
 
     /**
-     * log path
+     * driver resolver
      * 
-     * @var string
+     * @var array
      */
-    protected $path = './storage/logs';
-
-    /**
-     * file open handle
-     * 
-     * @var resource|false
-     */
-    protected $handle;
-
-    /**
-     * @param string $path
-     * 
-     * @return static
-     */
-    public function path($path = './storage/logs')
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    /**
-     * @param string $logName
-     * 
-     * @return static
-     */
-    public function logName($logName = 'system.log')
-    {
-        $this->name = $logName;
-
-        return $this;
-    }
+    protected $channels = array();
 
     /**
      * @param string $message
@@ -61,7 +31,8 @@ class Log
             $this->content(
                 'info',
                 array(
-                    $message, json_encode($arguments)
+                    $message,
+                    json_encode($arguments)
                 )
             )
         );
@@ -79,7 +50,8 @@ class Log
             $this->content(
                 'debug',
                 array(
-                    $message, json_encode($arguments)
+                    $message,
+                    json_encode($arguments)
                 )
             )
         );
@@ -97,7 +69,8 @@ class Log
             $this->content(
                 'warning',
                 array(
-                    $message, json_encode($arguments)
+                    $message,
+                    json_encode($arguments)
                 )
             )
         );
@@ -114,7 +87,8 @@ class Log
         $isException = false;
 
         $params = array(
-            $message, $content
+            $message,
+            $content
         );
 
         if ($message instanceof \Exception) {
@@ -141,7 +115,8 @@ class Log
         $isException = false;
 
         $params = array(
-            $message, $content
+            $message,
+            $content
         );
 
         if ($message instanceof \Exception) {
@@ -182,16 +157,6 @@ class Log
     }
 
     /**
-     * @param string $message
-     * 
-     * @return static
-     */
-    public function logger($message)
-    {
-        return $this->fopen()->write($message);
-    }
-
-    /**
      * @param string $logLevel
      * @param array $params
      * @param bool|false $isException
@@ -202,10 +167,10 @@ class Log
     {
         array_unshift($params, strtoupper($logLevel));
 
-        return $this->replaceContent(
+        return "[" . date('Y-m-d G:i:s') . "] " . $this->replaceContent(
             $this->contentFormat($logLevel, $isException),
             $params
-        );
+        ) . PHP_EOL;
     }
 
     /**
@@ -260,44 +225,57 @@ CONTENT;
     }
 
     /**
-     * @return string
-     */
-    public function getCompilerPath()
-    {
-        return $this->path . '/' . $this->name;
-    }
-
-    /**
      * @return static
      */
-    public function fopen()
+    public static function make()
     {
-        if (!is_dir($this->path)) {
-            mkdir($this->path, 0664);
+        if (static::$instance) {
+            return static::$instance;
         }
 
-        $this->handle = fopen($this->getCompilerPath(), 'a');
+        static::$instance = new static;
 
-        return $this;
+        return static::$instance;
     }
 
     /**
-     * @param string $message
+     * @param string $channel
      * 
      * @return static
      */
-    public function write($message)
+    public static function channel($channel = 'file')
     {
-        fwrite($this->handle, "[" . date('Y-m-d G:i:s') . "] " . print_r($message, true) . "\n");
+        $instance = static::make();
 
-        return $this;
+        switch ($channel) {
+            case 'file':
+            default:
+                $resolver = new FileLog();
+
+                $instance->channels[$channel] = $resolver;
+                break;
+        }
+
+        return $instance;
     }
 
-
-    public function __destruct()
+    public function __call($method, $arguments)
     {
-        if ($this->handle) {
-            fclose($this->handle);
+        if (empty($this->channels)) {
+            $channel = static::channel($this->channel);
+
+            return call_user_func_array(array($channel, $method), $arguments);
         }
+
+        $channel = $this->channels[$this->channel];
+
+        return call_user_func_array(array($channel, $method), $arguments);
+    }
+
+    public static function __callStatic($method, $arguments)
+    {
+        $instance = static::make();
+
+        return call_user_func_array(array($instance, $method), $arguments);
     }
 }

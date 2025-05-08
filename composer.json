@@ -8,5 +8,7 @@
             "Wilkques\\Log\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "wilkques/filesystem": "^1.0.0"
+    }
 }
