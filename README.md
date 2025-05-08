@@ -13,7 +13,7 @@ $log = new \Wilkques\Log\Log;
 
 // or
 
-$log = \Wilkques\Log\Log::make();
+$log = \Wilkques\Log\Log::channel();
 
 // or
 
