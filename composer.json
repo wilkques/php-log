@@ -9,6 +9,9 @@
         }
     },
     "require": {
-        "wilkques/filesystem": "^1.0.0"
+        "php": ">=5.4",
+        "wilkques/container": "*",
+        "wilkques/filesystem": "^1.0.0",
+        "wilkques/php-helper": "^5.13.0"
     }
 }

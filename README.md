@@ -9,11 +9,7 @@ composer require wilkques/log
 
 ## How to use
 ```php
-$log = new \Wilkques\Log\Log;
-
-// or
-
-$log = \Wilkques\Log\Log::channel();
+$log = \Wilkques\Log\Log::make();
 
 // or
 
@@ -21,7 +17,7 @@ $log = logger();
 
 $log->logName('<change log name>'); // default system.log
 
-$log->path('<change log path>'); // default ./storage/logs
+$log->setDirectory('<change log path>'); // default ./storage/logs
 
 $log->info(123);
 
@@ -33,40 +29,33 @@ $log->error(123);
 
 $log->critical(123);
 
-$log->error(new \Exception(123, 400));
+$log->error(new \Exception(123));
 
-$log->critical(new \Exception(456, 500));
+$log->critical(new \Exception(456));
 
+// or
+
+Wilkques\Log\Log::info('123');
+Wilkques\Log\Log::debug('123');
+Wilkques\Log\Log::warning('123');
+Wilkques\Log\Log::error('123');
+Wilkques\Log\Log::critical('123');
+Wilkques\Log\Log::error(new \Exception(123));
+Wilkques\Log\Log::critical(new \Exception(456));
 ```
 
 output
 
 ```log
-[2025-05-08 17:31:49] [INFO] : 123 
-[Information] 
-#0 arguments: 
-[]
-[2025-05-08 17:31:49] [DEBUG] : 123 
-[Information] 
-#0 arguments: 
-[]
-[2025-05-08 17:31:49] [WARNING] : 123 
-[Information] 
-#0 arguments: 
-[]
-[2025-05-08 17:31:49] [ERROR] : 123 
-
-[2025-05-08 17:31:49] [CRITICAL] : 123 
-
-[2025-05-08 17:31:49] [ERROR] : 123
-(code:400)
-C:\works\projects\packages\54\test.php:(60)
-[StackTrace]
+[2025-05-14 11:29:14] [INFO] 123
+[2025-05-14 11:29:14] [DEBUG] 123
+[2025-05-14 11:29:14] [WARNING] 123
+[2025-05-14 11:29:14] [ERROR] 123
+[2025-05-14 11:29:14] [CRITICAL] 123
+[2025-05-14 11:29:14] [ERROR] exception 'Exception' with message '123' in C:\works\projects\packages\54\test.php:70
+Stack trace:
 #0 {main}
-
-[2025-05-08 17:31:49] [CRITICAL] : 456
-(code:500)
-C:\works\projects\packages\54\test.php:(62)
-[StackTrace]
+[2025-05-14 11:29:14] [CRITICAL] exception 'Exception' with message '456' in C:\works\projects\packages\54\test.php:71
+Stack trace:
 #0 {main}
 ```

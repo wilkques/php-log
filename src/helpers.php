@@ -6,10 +6,11 @@ if (!function_exists('logger')) {
      * 
      * @return \Wilkques\Log\Log
      */
-    function logger($message = null, $channel = 'file')
+    function logger($message = null, $channel = 'system')
     {
-        /** @var \Wilkques\Log\Log */
-        $log = Wilkques\Log\Log::channel($channel);
+        $log = Wilkques\Log\Log::make();
+
+        $log->channel($channel);
 
         if ($message) {
             return $log->info($message);

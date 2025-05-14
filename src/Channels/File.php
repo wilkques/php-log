@@ -1,10 +1,10 @@
 <?php
 
-namespace Wilkques\Log;
+namespace Wilkques\Log\Channels;
 
 use Wilkques\Filesystem\Filesystem;
 
-class FileLog
+class File
 {
     /**
      * log name
@@ -36,13 +36,13 @@ class FileLog
      * @param string $fileName
      * @param string $directory
      */
-    public function __construct($directory = './storage/logs', $filePermission = null)
+    public function __construct($directory = './storage/logs', $filePermission = null, Filesystem $filesystem)
     {
         $this->setDirectory($directory);
 
         $this->setFilePermission($filePermission);
 
-        $this->filesystem = new Filesystem;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -106,12 +106,12 @@ class FileLog
     }
 
     /**
-     * Create the file cache directory if necessary.
+     * Create the file log directory if necessary.
      *
      * @param  string  $path
      * @return void
      */
-    protected function ensureCacheDirectoryExists($path)
+    protected function ensureLogDirectoryExists($path)
     {
         $directory = dirname($path);
 
@@ -147,7 +147,7 @@ class FileLog
      */
     public function logger($message)
     {
-        $this->ensureCacheDirectoryExists($path = $this->getCompilerPath());
+        $this->ensureLogDirectoryExists($path = $this->getCompilerPath());
 
         $result = $this->filesystem->append($path, $message);
 
