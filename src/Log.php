@@ -33,7 +33,7 @@ class Log
     {
         $container = Container::getInstance();
 
-        return $container->make('\\Wilkques\\Log\\Log', array($container));
+        return $container->make(__CLASS__, array($container));
     }
 
     public function __call($method, $arguments)
