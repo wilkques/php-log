@@ -31,7 +31,9 @@ class Log
      */
     public static function make()
     {
-        return (new \Wilkques\Container\Container)->make('\\Wilkques\\Log\\Log');
+        $container = Container::getInstance();
+
+        return $container->make('\\Wilkques\\Log\\Log', array($container));
     }
 
     public function __call($method, $arguments)
