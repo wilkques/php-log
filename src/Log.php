@@ -12,6 +12,11 @@ class Log
     protected $container;
 
     /**
+     * @var Channel
+     */
+    protected $channel;
+
+    /**
      * @var array
      */
     protected $levels = array(
@@ -21,9 +26,11 @@ class Log
     /**
      * @param Container $container
      */
-    public function __construct(Container $container)
+    public function __construct(Container $container, Channel $channel)
     {
         $this->container = $container;
+
+        $this->channel = $channel;
     }
 
     /**
@@ -33,20 +40,19 @@ class Log
     {
         $container = Container::getInstance();
 
-        return $container->make(__CLASS__, array($container));
+        return $container->make(__CLASS__);
     }
 
     public function __call($method, $arguments)
     {
-        /** @var \Wilkques\Log\Channel */
-        $channel = $this->container->make('\\Wilkques\\Log\\Channel');
-
         // choise driver
         if ($method == 'channel') {
-            return call_user_func_array(array($channel, 'channel'), $arguments);
+            call_user_func_array(array($this->channel, 'channel'), $arguments);
+
+            return $this;
         }
 
-        $store = $channel->channel();
+        $store = $this->channel->channel();
 
         if (in_array($method, $this->levels)) {
             $messageHandler = new MessageHandler;
@@ -56,7 +62,9 @@ class Log
             );
         }
 
-        return call_user_func_array(array($store, $method), $arguments);
+        call_user_func_array(array($store, $method), $arguments);
+
+        return $this;
     }
 
     public static function __callStatic($method, $arguments)

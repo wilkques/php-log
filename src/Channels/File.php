@@ -144,7 +144,7 @@ class File
     /**
      * @param string $message
      * 
-     * @return static
+     * @return bool
      */
     public function logger($message)
     {

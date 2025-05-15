@@ -37,9 +37,13 @@ class Channel
      * 
      * @return \Wilkques\Log\Channels\File
      */
-    public function channel($channel = 'system')
+    public function channel($channel = null)
     {
-        $this->channel = $channel;
+        if ($channel) {
+            $this->channel = $channel;
+        }
+
+        $channel = $channel ?: $this->channel;
 
         switch ($channel) {
             default:
