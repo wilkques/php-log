@@ -24,6 +24,13 @@ class Log
     );
 
     /**
+     * @param array
+     */
+    protected $forceMethods = array(
+        'getCompilerPath'
+    );
+
+    /**
      * @param Container $container
      */
     public function __construct(Container $container, Channel $channel)
@@ -53,6 +60,10 @@ class Log
         }
 
         $store = $this->channel->channel();
+
+        if (in_array($method, $this->forceMethods)) {
+            return call_user_func_array(array($store, $method), $arguments);
+        }
 
         if (in_array($method, $this->levels)) {
             $messageHandler = new MessageHandler;
