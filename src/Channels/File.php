@@ -33,10 +33,11 @@ class File
     protected $filePermission;
 
     /**
+     * @param Filesystem $filesystem
      * @param string $fileName
      * @param string $directory
      */
-    public function __construct($directory = './storage/logs', $filePermission = null, Filesystem $filesystem)
+    public function __construct(Filesystem $filesystem, $directory = './storage/logs', $filePermission = null)
     {
         $this->setDirectory($directory);
 
