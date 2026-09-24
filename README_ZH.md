@@ -3,6 +3,8 @@
 [![Latest Stable Version](https://poser.pugx.org/wilkques/log/v/stable)](https://packagist.org/packages/wilkques/log)
 [![License](https://poser.pugx.org/wilkques/log/license)](https://packagist.org/packages/wilkques/log)
 
+[English](README.md) | 繁體中文
+
 ````
 composer require wilkques/log
 ````
