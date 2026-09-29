@@ -1,0 +1,57 @@
+name: TESTS
+
+on:
+  push:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.operating-system }}
+
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        # composer.json declares "php": ">=5.3" — verified by hand: all 5
+        # src/*.php files were already free of PHP 5.4+ syntax (no short
+        # array literals, no (new Foo())->bar() chaining, no function-result
+        # array dereferencing, no scalar/nullable type hints), and a real
+        # end-to-end smoke test (Container -> Channel -> Log -> File,
+        # actually writing a log line to disk) passes on real PHP 5.3.10.
+        php-versions: ['5.3', '5.4', '5.6', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
+
+    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        extensions: intl #optional
+        ini-values: "post_max_size=256M" #optional
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-${{ matrix.php-versions }}
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Validate composer.json
+      run: composer validate --strict
+
+    # No tests/ directory or phpunit/phpunit require-dev exists in this
+    # package yet, so there is no real test suite to run here — this is a
+    # syntax/validation check only. Replace with `vendor/bin/phpunit` (see
+    # wilkques/php-helper's "Run test" step) once a test suite is added.
+    - name: PHP syntax check
+      run: find src -name "*.php" -print0 | xargs -0 -n1 php -l
